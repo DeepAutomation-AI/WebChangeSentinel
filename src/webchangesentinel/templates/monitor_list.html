@@ -1,0 +1,14 @@
+{% for monitor in monitors %}
+<article class="monitor-card">
+  <div class="monitor-top"><div class="monitor-icon">{{ '◎' if monitor.engine == 'http' else '▣' }}</div><div class="monitor-name"><h3><a href="/monitors/{{ monitor.id }}">{{ monitor.name or monitor.id }}</a></h3><a class="monitor-url" href="{{ monitor.url }}" target="_blank" rel="noopener noreferrer">{{ monitor.url }}</a></div><span class="status status-{{ monitor.status }}">{{ status_labels.get(monitor.status, monitor.status) }}</span></div>
+  <div class="monitor-meta"><span>◷ Cada {{ monitor.interval }}</span><span>{{ 'Navegador' if monitor.engine == 'playwright' else 'HTTP' }}</span><span>{{ monitor.selector or 'Texto completo' }}</span></div>
+  {% if monitor.last_error %}<p class="error-text">{{ monitor.last_error }}</p>{% endif %}
+  <div class="monitor-bottom"><span class="muted small">{{ monitor.last_checked_at or 'Aún no comprobado' }}</span><div class="actions">
+    <form method="post" action="/monitors/{{ monitor.id }}/check" hx-post="/monitors/{{ monitor.id }}/check" hx-target="#result-{{ monitor.id }}" hx-disabled-elt="find button"><button type="submit" class="button button-small">Comprobar</button></form>
+    <form method="post" action="/monitors/{{ monitor.id }}/toggle" hx-post="/monitors/{{ monitor.id }}/toggle" hx-target="#monitor-list"><button type="submit" class="button button-quiet button-small">{{ 'Pausar' if monitor.enabled else 'Activar' }}</button></form>
+    <a class="button button-quiet button-small" href="/monitors/{{ monitor.id }}">Historial →</a>
+  </div></div><div id="result-{{ monitor.id }}" aria-live="polite"></div>
+</article>
+{% else %}
+<div class="empty-state"><span class="empty-icon">◎</span><h3>Tu primer cambio empieza aquí</h3><p>Añade una URL para guardar su primera captura y comenzar a detectar cambios.</p></div>
+{% endfor %}

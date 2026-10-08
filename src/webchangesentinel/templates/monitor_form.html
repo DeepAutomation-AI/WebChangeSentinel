@@ -1,0 +1,21 @@
+{% if error %}<div class="notice notice-error" role="alert">{{ error }}</div>{% endif %}
+<form method="post" action="{{ '/monitors/' ~ monitor.id ~ '/edit' if editing else '/monitors' }}" class="monitor-form">
+  {% if not editing %}<label>Identificador<input name="id" value="{{ form.id }}" required maxlength="64" pattern="[A-Za-z0-9][A-Za-z0-9_-]*" placeholder="mi-monitor"><small>Letras, números, guiones y guion bajo.</small></label>{% endif %}
+  <label>Nombre<input name="name" value="{{ form.name }}" placeholder="Página de precios"></label>
+  <label>URL<input type="url" name="url" value="{{ form.url }}" required placeholder="https://ejemplo.com/precios"></label>
+  <div class="form-grid"><label>Frecuencia<input name="interval" value="{{ form.interval }}" required placeholder="5m"><small>Ejemplos: 5m, 2h, 1d.</small></label><label>Motor<select name="engine"><option value="http" {% if form.engine == 'http' %}selected{% endif %}>HTTP · páginas estáticas</option><option value="playwright" {% if form.engine == 'playwright' %}selected{% endif %}>Playwright · JavaScript</option></select></label></div>
+  <div class="form-grid"><label>Contenido<select name="selector_type"><option value="full" {% if form.selector_type == 'full' %}selected{% endif %}>Texto completo</option><option value="css" {% if form.selector_type == 'css' %}selected{% endif %}>Selector CSS</option><option value="xpath" {% if form.selector_type == 'xpath' %}selected{% endif %}>XPath</option></select></label><label>Selector<input name="selector" value="{{ form.selector or '' }}" placeholder="#precio o //h1"></label></div>
+  <label class="checkbox"><input type="checkbox" name="enabled" {% if form.enabled %}checked{% endif %}>Monitor activo</label>
+  <details class="advanced"><summary>Filtros y opciones avanzadas</summary><div class="advanced-body">
+    <div class="form-grid"><label>Diferencia mínima (%)<input type="number" name="threshold_percent" value="{{ form.filters.threshold_percent }}" min="0" max="100" step="0.1"></label><label>Caracteres cambiados<input type="number" name="min_changed_chars" value="{{ form.filters.min_changed_chars }}" min="0"></label></div>
+    <label>Keywords<textarea name="keywords" rows="2" placeholder="Una palabra o frase por línea">{{ form.filters.keywords|join('\n') }}</textarea><small>Solo alerta cuando el contenido cambiado contiene alguna.</small></label>
+    <label>Ignorar selectores CSS<textarea name="ignore_selectors" rows="2" placeholder=".fecha&#10;.anuncio">{{ form.filters.ignore_selectors|join('\n') }}</textarea></label>
+    <label>Ignorar patrones (regex)<textarea name="ignore_patterns" rows="2" placeholder="Un patrón por línea">{{ form.filters.ignore_patterns|join('\n') }}</textarea></label>
+    <label class="checkbox"><input type="checkbox" name="ignore_case" {% if form.filters.ignore_case %}checked{% endif %}>Ignorar mayúsculas y minúsculas</label>
+    <label>Canales de alerta<input name="channels" value="{{ form.channels|join(', ') }}" placeholder="email, telegram, discord, slack, desktop"><small>Configura las credenciales en YAML o variables de entorno.</small></label>
+    <label class="checkbox"><input type="checkbox" name="headless" {% if form.headless %}checked{% endif %}>Navegador headless</label>
+    <label class="checkbox"><input type="checkbox" name="visual" {% if form.visual %}checked{% endif %}>Guardar y comparar capturas visuales (Playwright)</label>
+    <label class="checkbox"><input type="checkbox" name="image_hash" {% if form.image_hash %}checked{% endif %}>Comparar perceptual hash de imágenes</label>
+  </div></details>
+  <button class="button button-primary" type="submit">{{ 'Guardar cambios' if editing else 'Crear monitor' }}</button>
+</form>
