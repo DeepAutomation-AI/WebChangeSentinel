@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-heading">
+  <div><p class="eyebrow">TU CENTRO DE MONITOREO</p><h1>La web cambia.<br><span>Mantente al tanto.</span></h1><p class="subtitle">Cada página, cada cambio, en un solo lugar.</p></div>
+  <div class="stats"><strong>{{ monitors|length }}</strong><span>monitores</span><strong>{{ active_count }}</strong><span>activos</span></div>
+</section>
+<section class="workspace">
+  <div class="monitor-column"><div class="section-heading"><h2>Monitores</h2><span class="live-indicator">Actualización automática</span></div>
+    <div id="monitor-list" hx-get="/partials/monitors" hx-trigger="every 15s" hx-swap="innerHTML">{% include "monitor_list.html" %}</div>
+  </div>
+  <aside class="panel"><div class="section-heading"><h2>Nuevo monitor</h2><span class="pill">+ URL</span></div><p class="muted">Elige una página y la frecuencia con la que quieres revisarla.</p>{% include "monitor_form.html" %}</aside>
+</section>
+{% endblock %}

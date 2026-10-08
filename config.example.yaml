@@ -1,0 +1,62 @@
+# Este ejemplo valida y arranca sin credenciales. Activa un monitor desde el
+# dashboard o cambia enabled a true antes de iniciar el planificador.
+# Las rutas relativas se resuelven desde el directorio de trabajo del proceso.
+database_url: sqlite:///data/sentinel.db
+snapshot_dir: data/screenshots
+concurrency: 4
+
+notifications: {}
+
+# Para activar canales, sustituye notifications: {} por un mapa como este y
+# configura las variables de entorno antes de cargar la configuración.
+# notifications:
+#   correo:
+#     kind: email
+#     host: "${SMTP_HOST}"
+#     port: 587
+#     username: "${SMTP_USERNAME}"
+#     password: "${SMTP_PASSWORD}"
+#     from_address: "${SMTP_FROM}"
+#     to_addresses: ["${SMTP_TO}"]
+#     starttls: true
+#     ssl: false
+#   telegram:
+#     kind: telegram
+#     bot_token: "${TELEGRAM_BOT_TOKEN}"
+#     chat_id: "${TELEGRAM_CHAT_ID}"
+#   discord:
+#     kind: discord
+#     webhook_url: "${DISCORD_WEBHOOK_URL}"
+#   slack:
+#     kind: slack
+#     webhook_url: "${SLACK_WEBHOOK_URL}"
+#   escritorio:
+#     kind: desktop
+
+monitors:
+  - id: example
+    name: Ejemplo de texto completo
+    url: https://example.com
+    enabled: false
+    selector_type: full
+    selector: null
+    engine: http
+    interval: 5m
+    headless: true
+    visual: false
+    image_hash: false
+    timeout: 30
+    retries: 3
+    retry_backoff: 1
+    user_agents:
+      - Mozilla/5.0 (compatible; WebChangeSentinel/1.0)
+      - Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36
+    proxy: null
+    filters:
+      threshold_percent: 1
+      min_changed_chars: 1
+      keywords: []
+      ignore_selectors: []
+      ignore_patterns: []
+      ignore_case: false
+    channels: []
